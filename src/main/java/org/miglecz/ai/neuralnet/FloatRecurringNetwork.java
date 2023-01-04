@@ -1,5 +1,6 @@
 package org.miglecz.ai.neuralnet;
 
+import static com.google.common.flogger.LazyArgs.lazy;
 import static java.lang.String.format;
 import static java.util.logging.Level.CONFIG;
 import java.util.Arrays;
@@ -59,8 +60,8 @@ public class FloatRecurringNetwork {
             , nodes
             , this.activation
             , this.iterations
-            , Arrays.toString(values)
-            , Arrays.toString(this.weights)
+            , lazy(() -> Arrays.toString(values))
+            , lazy(() -> Arrays.toString(this.weights))
         );
     }
 
@@ -87,8 +88,8 @@ public class FloatRecurringNetwork {
         }
         final var outputs = getOutputs();
         log.at(CONFIG).log("calculate: %s -> %s"
-            , Arrays.toString(inputs)
-            , Arrays.toString(outputs)
+            , lazy(() -> Arrays.toString(inputs))
+            , lazy(() -> Arrays.toString(outputs))
         );
         return outputs;
     }
@@ -120,12 +121,13 @@ public class FloatRecurringNetwork {
             try {
                 result += values[i] * weights[i + offset];
             } catch (final ArrayIndexOutOfBoundsException e) {
+                final int finalI = i;
                 log.at(CONFIG).log("index=%d, n=%d, offset=%d, len=%d-%d"
                     , index
                     , n
                     , offset
                     , weights.length
-                    , i + offset
+                    , lazy(() -> finalI + offset)
                 );
                 throw e;
             }
